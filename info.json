@@ -1,0 +1,12 @@
+{
+  "commit": {
+    "commit": "802f0028fe11bfad372c16226aa7c14083202ad8",
+    "author": "Jeroen Ooms <jeroenooms@gmail.com>",
+    "time": "2021-01-11 11:14:18",
+    "files": 3,
+    "merge": false,
+    "message": "Do not use RCurl, fixes #19\n"
+  },
+  "remote": "https://github.com/ropensci/restez",
+  "pkg": "restez"
+}
