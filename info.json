@@ -1,0 +1,12 @@
+{
+  "commit": {
+    "commit": "a0acb1a0e8b2b59627aa6ae8c6e5dd4b81fc23e5",
+    "author": "joelnitta <joelnitta@gmail.com>",
+    "time": "2023-10-25 21:16:14",
+    "files": 2,
+    "merge": false,
+    "message": "Bump ver\n"
+  },
+  "repo": "https://github.com/ropensci/restez",
+  "pkg": "restez"
+}

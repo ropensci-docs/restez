@@ -1,0 +1,15 @@
+pandoc: 2.16.2
+pkgdown: 2.0.7
+pkgdown_sha: ~
+articles:
+  1_rodents: 1_rodents.html
+  2_search_and_fetch: 2_search_and_fetch.html
+  3_parsing: 3_parsing.html
+  4_phylotar: 4_phylotar.html
+  5_tips_and_tricks: 5_tips_and_tricks.html
+  restez: restez.html
+last_built: 2024-03-23T06:25Z
+urls:
+  reference: https://docs.ropensci.org/restez/reference
+  article: https://docs.ropensci.org/restez/articles
+
