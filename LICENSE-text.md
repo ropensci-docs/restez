@@ -1,0 +1,4 @@
+# License
+
+    YEAR: 2022
+    COPYRIGHT HOLDER: Antonelli Lab and Joel Nitta

@@ -1,0 +1,95 @@
+# 5. Tips and Tricks
+
+## Multiple restez paths
+
+It is not advisable to download the entire GenBank database to your
+machine. Equally, it is best to limit the size of a database. Databases
+that are too large will be slow to query and are more likely to cause
+memory issues. For example, you may actually make a query that demands
+more memory than is available on your machine. One solution to instead
+set multiple `restez` paths on your machine.
+
+You can either set up a path for different domains. Or you could
+download for a single set of domains and then create a database from the
+same downloaded files using the `alt_restez_path` argument.
+
+``` r
+
+# a larger database from the same download files in rodents_path
+db_create(alt_restez_path = rodents_path, max_length = 2000)
+```
+
+## Accession filter
+
+Another way to create smaller (i.e., more efficient) databases is to use
+the accession filter. This is particularly useful if the organisms you
+are interested in are only a small subset of a much larger domain. For
+example, you might be only interested in ferns, but since ferns are part
+of the plant domain (and the smallest domain including ferns is plants),
+this means you need to download the entire plant domain (638 GB as of
+release 251!). While restez cannot download just ferns, it can build a
+database only including ferns, which should be much more efficient for
+querying than a database of all plants.
+
+To do this, use
+[`ncbi_acc_get()`](https://docs.ropensci.org/restez/reference/ncbi_acc_get.md)
+first to obtain a vector of accessions (GenBank IDs). Construct the
+query as you would [when searching on
+GenBank](https://www.ncbi.nlm.nih.gov/books/NBK44863/#sequencesquickstart.How_do_I_use_a_simpl).
+
+``` r
+
+# Specify vector of GenBank accessions:
+# all ferns in GenBank between with sequence length between 10 to 200000 bases
+fern_accs <- ncbi_acc_get("Polypodiopsida[ORGN] AND 10:200000[SLEN]")
+```
+
+Next, use the vector of accessions as the accession filter
+(`acc_filter`) for
+[`db_create()`](https://docs.ropensci.org/restez/reference/db_create.md).
+
+One more tip: use `scan` to speed up the process of building the
+database. Particularly in cases where the target sequences (here, ferns)
+are only a small part of the GenBank domain (here, plants), there are
+many GenBank files that do not contain any target sequences at all.
+Setting `scan` to `TRUE` will first check if any of the target
+accessions are present in the file and if not, skip processing that file
+further. This can significantly save on time but is only available on
+machines with `zgrep` installed (typically Mac or Unix, but not
+Windows).
+
+``` r
+
+db_create(acc_filter = fern_accs, scan = TRUE)
+```
+
+## Which domain?
+
+The `db_download` function lists the various possible GenBank domains
+that can be downloaded. You can work out which GenBank domain a sequence
+belongs to by its three letter code towards the end of its locus. For
+example, the top of the record for this sequence indicates it is in the
+rodent domain.
+
+    LOCUS       LT548182                 456 bp    DNA     linear   ROD 23-NOV-2016
+    DEFINITION  TPA_inf: Cavia porcellus GLNH gene for globin H.
+    ACCESSION   LT548182
+    VERSION     LT548182.1
+
+## Database performance and behaviour
+
+The `restez` package database is built with
+[`duckdb`](https://github.com/duckdb/duckdb). If you encounter any
+errors that include the phrase “Server says”, then an issue is likely to
+have occurred within the database. Please raise such issues with
+[GitHub](https://github.com/ropensci/restez/issues). But keep the
+following factors in mind:
+
+- Is your request from the database likely to return an object too large
+  for your computer’s RAM? If the size of database is 5GB then it is
+  likely that a request pulling all of the sequence data and information
+  into an R session will be around 5GB as well.
+- Are you building and storing the database on a separate USB drive? It
+  has been noted that database behaviour can be unusual on separate USB
+  drives. When an issue, please provide information about your USB
+  drive’s format, size and USB connections.

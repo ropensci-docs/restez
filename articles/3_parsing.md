@@ -1,0 +1,218 @@
+# 3. Advanced parsing of a GenBank record
+
+In this tutorial we will demonstrate how the
+[`gb_extract()`](https://docs.ropensci.org/restez/reference/gb_extract.md)
+function works. `restez` downloads and stores all GenBank records in
+text format. Ordinarily, to be able to extract relevant bits of
+information from a text record in a systematic way we would need to make
+use of [regular
+expressions](https://en.wikipedia.org/wiki/Regular_expression).
+[`gb_extract()`](https://docs.ropensci.org/restez/reference/gb_extract.md)
+uses regular expressions, so we don’t have to. Here’s how it works.
+
+## A GenBank record
+
+restez comes with an example GenBank record, AY952423, which can be
+viewed [online](https://www.ncbi.nlm.nih.gov/nuccore/AY952423.1). We can
+retrieve the record with `rentrez` or load it using the
+[`data()`](https://rdrr.io/r/utils/data.html). We can visualise the
+record in R as it appears online using
+[`cat()`](https://rdrr.io/r/base/cat.html) – like print but with newline
+spaces parsed correctly.
+
+``` r
+
+library(restez)
+# record <- rentrez::entrez_fetch(db = 'nucleotide', id = 'AY952423', rettype = 'gb', retmode = 'text')
+data(record)
+cat(record)
+#> LOCUS       AY952423                2623 bp    DNA     linear   PLN 17-APR-2005
+#> DEFINITION  Livistona chinensis tRNA-Lys (trnK) gene, partial sequence; and
+#>             matK gene, complete sequence; chloroplast.
+#> ACCESSION   AY952423
+#> VERSION     AY952423.1
+#> KEYWORDS    .
+#> SOURCE      chloroplast Livistona chinensis
+#>   ORGANISM  Livistona chinensis
+#>             Eukaryota; Viridiplantae; Streptophyta; Embryophyta; Tracheophyta;
+#>             Spermatophyta; Magnoliophyta; Liliopsida; Arecaceae; Coryphoideae;
+#>             Livistoneae; Livistoninae; Livistona.
+#> REFERENCE   1  (bases 1 to 2623)
+#>   AUTHORS   Li,X.X. and Zhou,Z.K.
+#>   TITLE     Monocotyledons phylogeny based on three genes (matK, rbcL and 18S
+#>             rDNA) sequences
+#>   JOURNAL   Unpublished
+#> REFERENCE   2  (bases 1 to 2623)
+#>   AUTHORS   Li,X.X. and Zhou,Z.K.
+#>   TITLE     Direct Submission
+#>   JOURNAL   Submitted (03-MAR-2005) Taxonomical and Ethnobotanical Department,
+#>             Kunming Institute of Botany, The Chinese Academy of Sciences,
+#>             Heilongtan, Kunming, Yunnan 650204, China
+#> FEATURES             Location/Qualifiers
+#>      source          1..2623
+#>                      /organism="Livistona chinensis"
+#>                      /organelle="plastid:chloroplast"
+#>                      /mol_type="genomic DNA"
+#>                      /db_xref="taxon:115492"
+#>      gene            <1..>2623
+#>                      /gene="trnK"
+#>                      /note="tRNA-Lys"
+#>      intron          <1..>2623
+#>                      /gene="trnK"
+#>      gene            813..2347
+#>                      /gene="matK"
+#>      misc_feature    813..2347
+#>                      /gene="matK"
+#>                      /note="similar to maturase K"
+#> ORIGIN      
+#>         1 attggggttg ctaactcaac ggtagagtac tcggctttta agtgcgacta tcatctttta
+#>        61 cacatttgga tgaagtaagg aattcgtcca gactattggt agagtctata agaccacgac
+#>       121 tgatcctgaa aggtaatgaa tggaaaaaat agcatgtcgt acgtaataca atgagaaact
+#>       181 tgtaatttct tattgtaatt ttttaagtag aactttgagt ttatccttac tggatcatta
+#>       241 caaaaatatt gtattttatt tttggaaggg gacgaaaaaa aggaaattcc caacatttat
+#>       301 tgtttggtct aatgaataaa tggatagggg cctagggtag ggcccaattt ttgtaaaaca
+#>       361 aaaagcaacg agcttatgtt cttaatttga ataattaccc gatctaatta gatgttaaaa
+#>       421 ataaattagt gccagatgtg gtaaagggtt ctactgtaag tggacctttt tttttttttt
+#>       481 ttatgaatcc tacctattat ctattatgga ttaaagatgg atgtgtataa gaagaagtat
+#>       541 actgataaag agaatttttc caaagtcaaa agagcaatcg ggttgcaaaa ataaaggatt
+#>       601 tttacctccg agaattataa attaattgga tcaaaaggag aggaaaaagt ctgtgattgg
+#>       661 actccttcta tccgcgggta tgggtatata gtaggtatat atgtatattt gtatactata
+#>       721 taaattacat gccctgttct gaccgtattg cactatgtat tatttgataa tccaagaaat
+#>       781 gcctcctact tctggttcaa gtagaaatga aaatagaaga attacaagaa tatttagaaa
+#>       841 aagatagatc tcggcaacaa cacttcctat acccactttt ctttcaggag tatatttatg
+#>       901 cacttgctca tgattatggg tttaaagggt tcgatttttt acgaacctat ggaaattggg
+#>       961 ggttatgata ataaatctag ttcagtactt gtaaaacatt taattactcg aatgtatcaa
+#>      1021 cagaattatt tgatttattc tgttaatgaa tctaaccaaa atcgattgat tgagcataac
+#>      1081 aattcttttt attctcaaat gatatctgaa gtttttgcga tcattgcaga aattccattc
+#>      1141 tctcagcaat tactattttc tcttcgagga aaaaagaata ccaaaatctc agactttacg
+#>      1201 atctattcat tcaatatttc cctttttaga agacaaatta tcacatttaa actatgtgtc
+#>      1261 agatatatta ataccctatc ccatccattt ggaaatcttg gtgcaaattc ttcaatgctg
+#>      1321 gatccaagat gtttcttctt tgcatttatt gcgattcttt ctccacgaac atcataatgg
+#>      1381 gaatagtttt ttttttccaa agaaatcctt ttcaaaagaa aataaaagac tctttcgatt
+#>      1441 cctatataat tcttatgtat ctgaatgtga atttgtctta gtgtttcttc gtaaacaatc
+#>      1501 ctcttattta caatcaaaat cctatggaat ctttcttgag cgaacacatt tctatggaag
+#>      1561 aatggaacat cttatagtag tgtgtcataa ttattgtcag aaggcctttt gggtcttcaa
+#>      1621 ggatcctttt atgcattatg ttcgatatca aggaaaagca attctggcat caaaaggatc
+#>      1681 ttatcttttg atgaagaaat ggagatgtca tcttgtcaat ttctggcaat attattttca
+#>      1741 tttttgggct cagccttaca gaatttcaat aaaccaatta ggaaatcatt ccttctattt
+#>      1801 tctcggttat ctttcaagtg tattaaaaaa tacttcgtct gtaaggaatc aaatgctaga
+#>      1861 gaattccttt ttaatagata ctattactaa taaattggat accatagtcc cagttcttcc
+#>      1921 tcttattgga tctttgtcta aagctaaatt ttgtaccgta tccgggcatc ctagtagtaa
+#>      1981 gccaatctgg acggatttat cggattctga tattattgat agatttggtc ggatatgtag
+#>      2041 aaatctttct cattattata gtggatcctc aaaaaaacag agcttatatc gaataaggta
+#>      2101 tatacttcga ctttcttgtg ctagaacttt agctcgtaaa cataaaagta cagtacgtgc
+#>      2161 ttttttgcaa agattaggtt cggaattatt agaagaattc tttacagaag aagaaggagt
+#>      2221 tgtttttttg atttcccaaa agaacaaaac ctcttttcct ctctataggt cacatagaga
+#>      2281 acgcatttgg tatttggata ttatccatat taatgaattg gtgaattcat ttatgatggg
+#>      2341 gcgataagcc cctataaaat aagaaatata aattttttct aatgtctaat aaatagacga
+#>      2401 caaattcatt aattttcatt ctgaaatgct catctagtag tgtagtgatt gaatcaactg
+#>      2461 agtattcaaa atttttagac aaacttctag ggatagaagt ttgttttatc tgtatacata
+#>      2521 ggtaaagtcg tgtgcaatga aaaatgcaag cacgatttgg ggagagataa ttttctctat
+#>      2581 tgtaacaaat aaaaattatc tactccatcc gactagttaa tcg
+#> //
+```
+
+## Extracting
+
+We can extract different elements of the above record with
+[`gb_extract()`](https://docs.ropensci.org/restez/reference/gb_extract.md)
+….
+
+``` r
+
+# such as the LOCUS information ...
+(gb_extract(record = record, what = 'locus'))
+#>     accession        length           mol          type        domain          date 
+#>    "AY952423"        "2623"         "DNA"      "linear"         "PLN" "17-APR-2005"
+# the accession
+(gb_extract(record = record, what = 'accession'))
+#> [1] "AY952423"
+# the accession + version
+(gb_extract(record = record, what = 'version'))
+#> [1] "AY952423.1"
+# the organism name
+(gb_extract(record = record, what = 'organism'))
+#> [1] "Livistona chinensis"
+# the sequence definition line
+(gb_extract(record = record, what = 'definition'))
+#> [1] "Livistona chinensis tRNA-Lys (trnK) gene, partial sequence; and matK gene, complete sequence; chloroplast"
+# the keywords (this record doesn't have any ....)
+(gb_extract(record = record, what = 'keywords'))
+#> [1] ""
+# even the features as a list object
+features <- gb_extract(record = record, what = 'features')
+print(features[[1]])
+#> $type
+#> [1] "source"
+#> 
+#> $location
+#> [1] "1..2623"
+#> 
+#> $organism
+#> [1] "Livistona chinensis"
+#> 
+#> $organelle
+#> [1] "plastid:chloroplast"
+#> 
+#> $mol_type
+#> [1] "genomic DNA"
+#> 
+#> $db_xref
+#> [1] "taxon:115492gene            <1..>2623"
+#> 
+#> $gene
+#> [1] "trnK"
+#> 
+#> $note
+#> [1] "tRNA-Lysintron          <1..>2623"
+# and of course the sequence itself
+seq <- gb_extract(record = record, what = 'sequence')
+str(seq)
+#>  chr "ATTGGGGTTGCTAACTCAACGGTAGAGTACTCGGCTTTTAAGTGCGACTATCATCTTTTACACATTTGGATGAAGTAAGGAATTCGTCCAGACTATTGGTAGAGTCTATAA"| __truncated__
+```
+
+## From the database
+
+You can try out the above functions yourself on any sequence record by
+downloading them through the [`rentrez`
+package](https://github.com/ropensci/rentrez) using
+`entrez_fetch(db='nucleotide', rettype='gb')`. Or why not test them out
+using any of the records from the rodents database?
+
+``` r
+
+library(restez)
+restez_path_set(rodents_path)
+(rand_id <- sample(suppressWarnings(list_db_ids()), 1))
+#> [1] "AB004839"
+record <- gb_record_get(rand_id)
+(gb_extract(record = record, what = 'features'))
+#> [[1]]
+#> [[1]]$type
+#> [1] "source"
+#> 
+#> [[1]]$location
+#> [1] "1..130"
+#> 
+#> [[1]]$organism
+#> [1] "Apodemus argenteus"
+#> 
+#> [[1]]$mol_type
+#> [1] "genomic DNA"
+#> 
+#> [[1]]$db_xref
+#> [1] "taxon:61837"
+#> 
+#> 
+#> [[2]]
+#> [[2]]$type
+#> [1] "repeat_region"
+#> 
+#> [[2]]$location
+#> [1] "25..52"
+```
+
+## Next up
+
+**[Running phylotaR with
+restez](https://docs.ropensci.org/restez/articles/4_phylotar.html)**

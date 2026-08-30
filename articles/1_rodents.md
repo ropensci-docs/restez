@@ -1,0 +1,82 @@
+# 1. Build a database of all rodents
+
+In this first tutorial we are going to build a database for all rodents.
+The rodents are a good test case for playing with `restez` as they are a
+relatively small domain in GenBank but still have charismatic organisms
+that people are familiar enough with to understand. We will also limit
+the number of sequences in the database by limiting the sequence sizes
+between 100 and 1000.
+
+The database you build here will be used again in later tutorials and
+you may wish to experiment with it yourself. Therefore it is best to
+locate a suitable place in your harddrive where you would like to store
+it for later reference. In this tutorial and in others, we will always
+refer to the rodents’ `restez` path with the variable `rodents_path`.
+
+Setting up the rodents database will likely take a long time. The exact
+time will depend on your internet speeds and machine specs. For
+reference, this vigenette was written on an iMac (2019) with a download
+speed of 56 MBPS. With this setup, downloading the database took 2.1 hr
+and creating the database took 7.4 hr.
+
+Note GenBank domains (i.e., major parts of GenBank split by major
+taxonomic group) are specified by number. As of writing, rodents are
+number 7, but the numbering scheme may change between releases, so don’t
+assume this will necessarily be the case in future releases. You can
+check the current number scheme by running
+[`db_download()`](https://docs.ropensci.org/restez/reference/db_download.md)
+without any input to `preselection`.
+
+## Download
+
+``` r
+
+library(restez)
+# set the restez path to a memorable location
+restez_path_set(rodents_path)
+# download for domain 7 (rodents as of GenBank release 256)
+db_download(preselection = '7')
+```
+
+## Build
+
+``` r
+
+db_create(min_length = 100, max_length = 1000)
+```
+
+## Check status
+
+``` r
+
+restez_status()
+#> Checking setup status at  ...
+#> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> Restez path ...
+#> ... Path '[RODENTS PATH]/restez'
+#> ... Does path exist? 'Yes'
+#> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> Download ...
+#> ... Path '[RODENTS PATH]/restez/downloads'
+#> ... Does path exist? 'Yes'
+#> ... N. files 308
+#> ... Total size 37.2G
+#> ... GenBank division selections 'Rodent'
+#> ... GenBank Release 256
+#> ... Last updated '2023-07-23 08:43:34.776903'
+#> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> Database ...
+#> ... Path '[RODENTS PATH]/restez/sql_db'
+#> ... Does path exist? 'Yes'
+#> ... Total size 845M
+#> ... Does the database have data? 'Yes'
+#> ... Number of sequences 263402
+#> ... Min. sequence length 100
+#> ... Max. sequence length 1000
+#> ... Last_updated '2023-07-23 15:35:11.578151'
+```
+
+## Next up
+
+**[How to search for and fetch
+sequences](https://docs.ropensci.org/restez/articles/2_search_and_fetch.html)**

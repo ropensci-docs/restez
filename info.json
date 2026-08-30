@@ -1,0 +1,13 @@
+{
+  "commit": {
+    "commit": "2fca23308ad67f064e01cf7e88328a0f98540c28",
+    "author": "joelnitta <joelnitta@gmail.com>",
+    "time": "2025-03-06T23:59:18Z",
+    "files": 2,
+    "merge": false,
+    "message": "Increment version number to 2.1.5.9000\n"
+  },
+  "repo": "https://github.com/ropensci/restez",
+  "pkg": "restez",
+  "time": "2026-08-30T07:14:34Z"
+}

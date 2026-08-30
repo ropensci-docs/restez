@@ -1,0 +1,118 @@
+# 4. Running phylotaR with restez
+
+In this tutorial we will showcase how a `restez` database can be used to
+speed up a [phylotaR](https://github.com/ropensci/phylotaR) run.
+`phylotaR` runs an automated pipeline for identifying orthologous gene
+clusters as the first step in a phylogenetic analysis. A user provides a
+taxonomic identity and the pipeline downloads all relevant sequences and
+identifies clusters using a local-alignment search tool. For more
+information on `phylotaR` see its [published
+article](https://doi.org/10.3390/life8020020).
+
+By using `restez` in conjunction with `phylotaR`, we will not only being
+saving time, but also improving the chances of a successful `phylotaR`
+run – often NCBI Entrez limits the number of requests or even rejects
+requests from IP addresses that are making too many. Note, however, that
+the gains in using `restez` with `phylotaR` only make sense if you make
+use of the `restez` database multiple times or if you wish to radically
+increase the maximum number of sequences to download per taxon (by
+default it is only 3,000). Also, note that using a `restez` database
+does not currently eliminate the need for an internet connection.
+`phylotaR` still needs to look up taxonomic information and must also
+identify relevant sequence IDs using Entrez (this may change in the
+future as `restez` develops).
+
+We will run a `phylotaR` run for the rodent subfamily, Dipodinae, the
+clade that contains jerboas. Because this clade is so small, it should
+not take too long to run it. We will, however, limit to showcasing only
+the download stage of the `phylotaR` pipeline, where `restez` is
+required.
+
+## Install phylotaR
+
+``` r
+
+# Currently only the development version of phylotaR can work with restez
+# It must be installed from GitHub using devtools
+devtools::install_github(repo = 'ropensci/phylotaR')
+```
+
+## Setup
+
+Since we will be running the `phylotaR` pipeline for Dipodinae, we can
+use the rodents database we created
+[before](https://ropensci.github.io/restez/articles/1_rodents.html). We
+do not need to set-up the `phylotaR` pipeline any differently with a
+`restez` database, except to ensure we have set the `restez` path to the
+rodent database.
+
+``` r
+
+library(phylotaR)
+
+# Restez (no need to call package)
+restez::restez_path_set(filepath = rodents_path)
+
+# Vars
+wd <- 'dipodinae'
+dir.create(wd)
+txid <- 35737  # Dipodinae
+mxsql <- 500
+ncbi_dr <- '[PATH/TO/BLAST]' # e.g. '/usr/local/ncbi/blast/bin'
+
+# setup
+setup(wd = wd, txid = txid, ncbi_dr = ncbi_dr, mxsql = 500)
+```
+
+## Run
+
+``` r
+
+# run just the first two stages for this demonstration
+taxise_run(wd)
+#> ---------------------------------------------------
+#> Starting stage TAXISE: [2023-07-24 07:00:06.361265]
+#> ---------------------------------------------------
+#> Searching taxonomic IDs ...
+#> Downloading taxonomic records ...
+#> . [1-38]
+#> Generating taxonomic dictionary ...
+#> ---------------------------------------------------
+#> Completed stage TAXISE: [2023-07-24 07:00:09.45394]
+#> ---------------------------------------------------
+download_run(wd)
+#> -----------------------------------------------------
+#> Starting stage DOWNLOAD: [2023-07-24 07:00:09.456996]
+#> -----------------------------------------------------
+#> Identifying suitable clades ...
+#> Identified [1] suitable clades.
+#> Connecting to restez database ...
+#> Downloading hierarchically ...
+#> Working on parent [id 35737]: [1/1] ...
+#> . + whole subtree ...
+#> . . Getting [300 sqs] from restez database...
+#> Successfully retrieved [300 sqs] in total.
+#> ------------------------------------------------------
+#> Completed stage DOWNLOAD: [2023-07-24 07:00:16.345238]
+#> ------------------------------------------------------
+```
+
+Sequences that cannot be found locally will be downloaded via Entrez.
+Sequences may not be found locally for three sets of reasons, 1.
+`phylotaR` may have identified non-GenBank sequences (e.g. RefSeq), 2.
+the local database may have size limits (ours has a min of 100 and a max
+1000), and 3. the local database is out of date, new GenBank releases
+are only made once a month.
+
+> Note: If the `phylotaR` messages do not explicit state that they are
+> using a `restez` database, then, you may not have set the `restez`
+> path.
+
+Compared to running without a `restez` database, phylotaR download can
+run [**2x**
+faster](https://github.com/ropensci/restez/blob/main/other/phylotar_demo.R).
+
+## Next up
+
+**[Tips and
+tricks](https://docs.ropensci.org/restez/articles/5_tips_and_tricks.html)**

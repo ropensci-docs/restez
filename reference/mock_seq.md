@@ -1,0 +1,92 @@
+# Mock seq
+
+Make a mock sequence. Designed to be part of a loop.
+
+## Usage
+
+``` r
+mock_seq(i, sqlngth = 10)
+```
+
+## Arguments
+
+- i:
+
+  integer, iterator
+
+- sqlngth:
+
+  integer, sequence length
+
+## Value
+
+character
+
+## See also
+
+Other private:
+[`add_rcrd_log()`](https://docs.ropensci.org/restez/reference/add_rcrd_log.md),
+[`cat_line()`](https://docs.ropensci.org/restez/reference/cat_line.md),
+[`char()`](https://docs.ropensci.org/restez/reference/char.md),
+[`check_connection()`](https://docs.ropensci.org/restez/reference/check_connection.md),
+[`cleanup()`](https://docs.ropensci.org/restez/reference/cleanup.md),
+[`connected()`](https://docs.ropensci.org/restez/reference/connected.md),
+[`connection_get()`](https://docs.ropensci.org/restez/reference/connection_get.md),
+[`db_download_intern()`](https://docs.ropensci.org/restez/reference/db_download_intern.md),
+[`db_sqlngths_get()`](https://docs.ropensci.org/restez/reference/db_sqlngths_get.md),
+[`db_sqlngths_log()`](https://docs.ropensci.org/restez/reference/db_sqlngths_log.md),
+[`dir_size()`](https://docs.ropensci.org/restez/reference/dir_size.md),
+[`dwnld_path_get()`](https://docs.ropensci.org/restez/reference/dwnld_path_get.md),
+[`dwnld_rcrd_log()`](https://docs.ropensci.org/restez/reference/dwnld_rcrd_log.md),
+[`entrez_fasta_get()`](https://docs.ropensci.org/restez/reference/entrez_fasta_get.md),
+[`entrez_gb_get()`](https://docs.ropensci.org/restez/reference/entrez_gb_get.md),
+[`extract_accession()`](https://docs.ropensci.org/restez/reference/extract_accession.md),
+[`extract_by_patterns()`](https://docs.ropensci.org/restez/reference/extract_by_patterns.md),
+[`extract_clean_sequence()`](https://docs.ropensci.org/restez/reference/extract_clean_sequence.md),
+[`extract_definition()`](https://docs.ropensci.org/restez/reference/extract_definition.md),
+[`extract_features()`](https://docs.ropensci.org/restez/reference/extract_features.md),
+[`extract_inforecpart()`](https://docs.ropensci.org/restez/reference/extract_inforecpart.md),
+[`extract_keywords()`](https://docs.ropensci.org/restez/reference/extract_keywords.md),
+[`extract_locus()`](https://docs.ropensci.org/restez/reference/extract_locus.md),
+[`extract_organism()`](https://docs.ropensci.org/restez/reference/extract_organism.md),
+[`extract_seqrecpart()`](https://docs.ropensci.org/restez/reference/extract_seqrecpart.md),
+[`extract_sequence()`](https://docs.ropensci.org/restez/reference/extract_sequence.md),
+[`extract_version()`](https://docs.ropensci.org/restez/reference/extract_version.md),
+[`file_download()`](https://docs.ropensci.org/restez/reference/file_download.md),
+[`filename_log()`](https://docs.ropensci.org/restez/reference/filename_log.md),
+[`flatfile_read()`](https://docs.ropensci.org/restez/reference/flatfile_read.md),
+[`gb_build()`](https://docs.ropensci.org/restez/reference/gb_build.md),
+[`gb_df_create()`](https://docs.ropensci.org/restez/reference/gb_df_create.md),
+[`gb_df_generate()`](https://docs.ropensci.org/restez/reference/gb_df_generate.md),
+[`gb_sql_add()`](https://docs.ropensci.org/restez/reference/gb_sql_add.md),
+[`gb_sql_query()`](https://docs.ropensci.org/restez/reference/gb_sql_query.md),
+[`gbrelease_check()`](https://docs.ropensci.org/restez/reference/gbrelease_check.md),
+[`gbrelease_get()`](https://docs.ropensci.org/restez/reference/gbrelease_get.md),
+[`gbrelease_log()`](https://docs.ropensci.org/restez/reference/gbrelease_log.md),
+[`has_data()`](https://docs.ropensci.org/restez/reference/has_data.md),
+[`identify_downloadable_files()`](https://docs.ropensci.org/restez/reference/identify_downloadable_files.md),
+[`last_add_get()`](https://docs.ropensci.org/restez/reference/last_add_get.md),
+[`last_dwnld_get()`](https://docs.ropensci.org/restez/reference/last_dwnld_get.md),
+[`last_entry_get()`](https://docs.ropensci.org/restez/reference/last_entry_get.md),
+[`latest_genbank_release()`](https://docs.ropensci.org/restez/reference/latest_genbank_release.md),
+[`latest_genbank_release_notes()`](https://docs.ropensci.org/restez/reference/latest_genbank_release_notes.md),
+[`message_missing()`](https://docs.ropensci.org/restez/reference/message_missing.md),
+[`mock_def()`](https://docs.ropensci.org/restez/reference/mock_def.md),
+[`mock_gb_df_generate()`](https://docs.ropensci.org/restez/reference/mock_gb_df_generate.md),
+[`mock_org()`](https://docs.ropensci.org/restez/reference/mock_org.md),
+[`mock_rec()`](https://docs.ropensci.org/restez/reference/mock_rec.md),
+[`predict_datasizes()`](https://docs.ropensci.org/restez/reference/predict_datasizes.md),
+[`readme_log()`](https://docs.ropensci.org/restez/reference/readme_log.md),
+[`restez_connect()`](https://docs.ropensci.org/restez/reference/restez_connect.md),
+[`restez_disconnect()`](https://docs.ropensci.org/restez/reference/restez_disconnect.md),
+[`restez_path_check()`](https://docs.ropensci.org/restez/reference/restez_path_check.md),
+[`restez_rl()`](https://docs.ropensci.org/restez/reference/restez_rl.md),
+[`search_gz()`](https://docs.ropensci.org/restez/reference/search_gz.md),
+[`seshinfo_log()`](https://docs.ropensci.org/restez/reference/seshinfo_log.md),
+[`setup()`](https://docs.ropensci.org/restez/reference/setup.md),
+[`slctn_get()`](https://docs.ropensci.org/restez/reference/slctn_get.md),
+[`slctn_log()`](https://docs.ropensci.org/restez/reference/slctn_log.md),
+[`sql_path_get()`](https://docs.ropensci.org/restez/reference/sql_path_get.md),
+[`stat()`](https://docs.ropensci.org/restez/reference/stat.md),
+[`status_class()`](https://docs.ropensci.org/restez/reference/status_class.md),
+[`testdatadir_get()`](https://docs.ropensci.org/restez/reference/testdatadir_get.md)
